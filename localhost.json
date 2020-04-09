@@ -1,0 +1,85 @@
+{
+  "kind": "List",
+  "apiVersion": "v1",
+  "items": [
+    {
+      "kind": "Ingress",
+      "apiVersion": "extensions/v1beta1",
+      "metadata": {
+        "name": "ingress",
+        "namespace": "default"
+      },
+      "spec": {
+        "rules": [
+          {
+            "host": "localhost",
+            "http": {
+              "paths": [
+                {
+                  "path": "/",
+                  "backend": {
+                    "serviceName": "blog",
+                    "servicePort": 80
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": { "name": "dashboard-out", "namespace": "kube-system" },
+      "spec": {
+        "type": "LoadBalancer",
+        "ports": [{ "port": 443, "protocol": "TCP", "targetPort": 8443 }],
+        "selector": { "k8s-app": "kubernetes-dashboard" }
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": { "name": "blog", "namespace": "default" },
+      "spec": {
+        "ports": [{ "port": 80, "protocol": "TCP", "targetPort": "http" }],
+        "selector": { "app": "blog" }
+      }
+    },
+    {
+      "kind": "Deployment",
+      "apiVersion": "apps/v1",
+      "metadata": {
+        "name": "blog",
+        "namespace": "default"
+      },
+      "spec": {
+        "replicas": 2,
+        "selector": {
+          "matchLabels": {
+            "app": "blog"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "blog"
+            },
+            "name": "blog",
+            "namespace": "default"
+          },
+          "spec": {
+            "containers": [
+              {
+                "image": "derekchuank/bars-and-waves",
+                "name": "bars-and-waves",
+                "ports": [{ "name": "http", "containerPort": 80 }]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
