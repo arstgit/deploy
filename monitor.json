@@ -1,0 +1,26 @@
+{
+  "kind": "List",
+  "apiVersion": "v1",
+  "items": [
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": { "name": "dashboard-out", "namespace": "kube-system" },
+      "spec": {
+        "type": "LoadBalancer",
+        "ports": [{ "port": 443, "protocol": "TCP", "targetPort": 8443 }],
+        "selector": { "k8s-app": "kubernetes-dashboard" }
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": { "name": "grafana-out", "namespace": "monitoring" },
+      "spec": {
+        "type": "LoadBalancer",
+        "ports": [{ "port": 443, "protocol": "TCP", "targetPort": 3000 }],
+        "selector": { "app": "grafana" }
+      }
+    }
+  ]
+}
